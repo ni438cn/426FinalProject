@@ -1,12 +1,16 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {Users} from './users.mjs';
+import cors from "cors";
+
+//const cors = require('cors');
 
 const app = express();
 
-const port = 3000;
-
+const port = 4000;
+app.use(cors());
 app.use(bodyParser.json());
+
 
 app.get('/User/:username', (req, res) => {
     // /User/:username?password=1234
@@ -44,6 +48,7 @@ app.get('/User/:username', (req, res) => {
 
 
 app.post('/User', (req, res) => {
+    console.log(req);
     let user = Users.create(req.body);
     if (!user) {
         res.status(400).send("Bad request");
