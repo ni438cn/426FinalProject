@@ -81,8 +81,29 @@ export class Users {
     static find(username, password) {
         return Users.#allUsers.find((ing) => (ing.getUsername() == username) && ing.verifyPassword(password));
     }
+    static findTeach(username, name, grade, gradeLetter, cname, chours) {
+        let user = Users.#allUsers.find((ing) => (ing.getUsername() == username) && (ing.getName() == name));
+        if (user.isCourse(cname)) {
+            let tmp = user.findCourse(cname);
+            tmp.creditHours = chours;
+            tmp.gradeLetter = gradeLetter;
+            tmp.grade = grade;
+        } else {
+            user.#courses.push({creditHours : chours, gradeLetter : gradeLetter, grade : grade, name: cname});
+        }
+
+    }
+
+    static getAll() {
+        Users.#allUsers.map((ing) => {
+            ing.getName(), ing.getUsername()
+        });
+    }
     getUsername() {
         return this.#username;
+    }
+    getName() {
+        return this.#name;
     }
     verifyPassword(pass) {
         return pass == this.#password;
@@ -95,6 +116,12 @@ export class Users {
     }
     setCourses (Courses) {
         this.#courses = Courses;
+    }
+    isCourse (name) {
+        return this.#courses.filter((cl) => (cl.name == name)).length > 0;
+    }
+    findCourse (name) {
+        return this.#courses.find((cl) => (cl.name == name));
     }
     setName (name) {
         this.#name = name;
