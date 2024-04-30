@@ -1,0 +1,18 @@
+{
+  "name": "426finalproject",
+  "version": "1.0.0",
+  "main": "backend.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/ni438cn/426FinalProject"
+  },
+  "author": "Nicholas Boyer, Mugheera Basharat, Connor Goodwin",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  }
+}
