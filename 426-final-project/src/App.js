@@ -2,7 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 
+
+let gl;
+
 function App() {
+  
   return (
     <Router>
       <div className="App">
@@ -19,6 +23,7 @@ function App() {
 
 function SignInPage() {
   const navigate = useNavigate();
+  
 
   async function eventHandler() {
     let username = document.getElementById("username").value;
@@ -70,6 +75,42 @@ function SignInPage() {
 }
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  async function eventHandler1() {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      "name": username,
+      "username": username,
+      "password": password,
+      "Courses": []
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+
+    fetch("http://localhost:4000/User", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        result = JSON.parse(result);
+        if (result.name != undefined) {
+          navigate(`/user/${username}`);
+          gl = result;
+        } else {
+          console.log("User not found or invalid credentials");
+        }
+      })
+      .catch((error) => console.error(error));
+  }
   return (
     <div className="registration-page">
       <h2>Registration Page</h2>
@@ -83,7 +124,7 @@ function RegisterPage() {
         </select>
         <span className="select-arrow">&#9662;</span>
         </div>
-            <button className="button">Register</button>
+            <button className="button" onClick={eventHandler1}>Register</button>
         </div>
         <div>
             <button className="button">Back</button>
@@ -93,8 +134,11 @@ function RegisterPage() {
 }
 
 function UserPage() {
+  console.log(gl);
   return (
-    <div></div>
+    <div>
+      <h1>Name : {gl.name}</h1>
+    </div>
   );
 }
 
