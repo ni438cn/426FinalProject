@@ -15,6 +15,7 @@ function App() {
           <Route path="/" element={<SignInPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/user/:username" element={<UserPage />} />
+          <Route path="/teach/:username" element={<TeachPage />} />
         </Routes>
       </div>
     </Router>
@@ -32,27 +33,47 @@ function SignInPage() {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
+    /*const raw = JSON.stringify({
       "name": username,
       "username": username,
       "password": password,
       "Courses": []
-    });
+    });*/
 
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
-      body: raw,
+      //body: raw,
       redirect: "follow"
     };
 
-    fetch("http://localhost:4000/User", requestOptions)
+    fetch("http://localhost:4000/User/" +username + "?password=" + password, requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        if (result === "success") {
+        console.log(result);
+        result = JSON.parse(result);
+        if (result.name != undefined) {
           navigate(`/user/${username}`);
+          gl = result;
+          return;
+          
         } else {
-          console.log("User not found or invalid credentials");
+          console.log("User student not found or invalid credentials");
+        }
+      })
+      .catch((error) => console.error(error));
+  
+  fetch("http://localhost:4000/Teach/" +username + "?password=" + password, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        result = JSON.parse(result);
+        if (result.name != undefined) {
+          navigate(`/teach/${username}`);
+          gl = result;
+          return;
+        } else {
+          console.log("User teacher not found or invalid credentials");
         }
       })
       .catch((error) => console.error(error));
@@ -79,6 +100,8 @@ function RegisterPage() {
   async function eventHandler1() {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
+    let type = document.getElementById("user-type").value;
+    //console.log(type);
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -96,21 +119,41 @@ function RegisterPage() {
       body: raw,
       redirect: "follow"
     };
+    if (type == "student") {
+        fetch("http://localhost:4000/User", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          result = JSON.parse(result);
+          if (result.name != undefined) {
+            navigate(`/user/${username}`);
+            gl = result;
+          } else {
+            console.log("User not found or invalid credentials");
+          }
+        })
+        .catch((error) => console.error(error));
+      }
 
-    fetch("http://localhost:4000/User", requestOptions)
+    
+    if (type == "teacher") {
+      fetch("http://localhost:4000/Teach", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
         result = JSON.parse(result);
         if (result.name != undefined) {
-          navigate(`/user/${username}`);
+          navigate(`/teach/${username}`);
           gl = result;
         } else {
           console.log("User not found or invalid credentials");
         }
       })
       .catch((error) => console.error(error));
+    };
+
   }
+    
   return (
     <div className="registration-page">
       <h2>Registration Page</h2>
@@ -134,13 +177,109 @@ function RegisterPage() {
 }
 
 function UserPage() {
-  console.log(gl);
+  async function eventHandler2() {
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+      let npassword = document.getElementById("new password").value;
+      let name = document.getElementById("name").value;
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        "name": name,
+        "username": username,
+        "password": npassword
+      });
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch("http://localhost:4000/User/" +username + "?password=" + password, requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          result = JSON.parse(result);
+          if (result.name != undefined) {
+            console.log("success!");
+          } else {
+            console.log("User not found or invalid credentials");
+            alert("Failed to reset")
+          }
+        })
+        .catch((error) => console.error(error));
+    }
   
   return (
     <div>
-      <h1>Name : {gl.name}</h1>
+      <h1>Student Name : {gl.name}</h1>
       <p>GPA : {gl.GPA}</p>
       <p>Courses: {JSON.stringify(gl.Courses)}</p>
+      <input className="input" type="text" id="username" placeholder="Current Username"></input>
+      <input className="input" type="password" id="password" placeholder="Current Password"></input>
+      <input className="input" type="password" id="new password" placeholder="New Password"></input>
+      <input className="input" type="text" id="name" placeholder="New name"></input>
+      <div>
+            <button className="button" onClick={eventHandler2}>Reset</button>
+      </div>
+    </div>
+  );
+}
+
+function TeachPage() {
+  async function eventHandler3() {
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+      let npassword = document.getElementById("new password").value;
+      let name = document.getElementById("name").value;
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        "name": name,
+        "username": username,
+        "password": npassword
+      });
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch("http://localhost:4000/User/" +username + "?password=" + password, requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          result = JSON.parse(result);
+          if (result.name != undefined) {
+            console.log("success!");
+          } else {
+            console.log("User not found or invalid credentials");
+            alert("Failed to reset")
+          }
+        })
+        .catch((error) => console.error(error));
+    }
+  
+  return (
+    <div>
+      <h1>Teacher Name : {gl.name}</h1>
+     
+      <p>Courses: {JSON.stringify(gl.Courses)}</p>
+      <input className="input" type="text" id="username" placeholder="Current Username"></input>
+      <input className="input" type="password" id="password" placeholder="Current Password"></input>
+      <input className="input" type="password" id="new password" placeholder="New Password"></input>
+      <input className="input" type="text" id="name" placeholder="New name"></input>
+      <div>
+            <button className="button" onClick={eventHandler3}>Reset</button>
+      </div>
     </div>
   );
 }
