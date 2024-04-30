@@ -231,6 +231,55 @@ function UserPage() {
 }
 
 function TeachPage() {
+  async function eventHandler4() {
+    let adder = document.getElementById("adder");
+    let a = document.createElement("input");
+    a.placeholder = "Course Name";
+    a.id = "Course Name";
+    adder.append(a);
+    let b = document.createElement("input");
+    b.placeholder = "Credit Hours";
+    b.id = "Credit Hours";
+    adder.append(b);
+    let options;
+    await fetch("http://localhost:4000/Users")
+    .then((response) => response.text())
+    .then((result) => {
+      console.log(result);
+      options = JSON.parse(result).users;
+      console.log(options);
+    })
+    .catch((error) => console.error(error));
+    let c = document.createElement("select");
+    c.textContent = "Choose Students:";
+    c.multiple = true;
+    //c.setAttribute("multiple");
+
+    c.id = "Students";
+    console.log(options);
+    options.forEach((e) => {
+      let o = document.createElement("option");
+      o.textContent = e.name;
+      c.append(o);
+    });
+    adder.append(c);
+
+
+    /*
+
+        Courses: [ {
+            name: "COMP 426",
+            students: [{
+            name: "student",
+            username: "student",
+            grade: 95,
+            gradeLetter: "A"}],
+            creditHours: 3,
+
+        }],
+    */
+
+  }
   async function eventHandler3() {
       let username = document.getElementById("username").value;
       let password = document.getElementById("password").value;
@@ -243,7 +292,8 @@ function TeachPage() {
       const raw = JSON.stringify({
         "name": name,
         "username": username,
-        "password": npassword
+        "password": npassword,
+        "Courses": gl.Courses
       });
 
       const requestOptions = {
@@ -273,10 +323,15 @@ function TeachPage() {
       <h1>Teacher Name : {gl.name}</h1>
      
       <p>Courses: {JSON.stringify(gl.Courses)}</p>
+      <div id="adder"></div>
+      <button className="button" onClick={eventHandler4}>Add Course</button>
+      <div>
       <input className="input" type="text" id="username" placeholder="Current Username"></input>
       <input className="input" type="password" id="password" placeholder="Current Password"></input>
       <input className="input" type="password" id="new password" placeholder="New Password"></input>
       <input className="input" type="text" id="name" placeholder="New name"></input>
+      </div>
+      
       <div>
             <button className="button" onClick={eventHandler3}>Reset</button>
       </div>

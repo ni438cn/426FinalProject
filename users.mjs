@@ -95,9 +95,9 @@ export class Users {
     }
 
     static getAll() {
-        Users.#allUsers.map((ing) => {
-            ing.getName(), ing.getUsername()
-        });
+        return {users: Users.#allUsers.map((ing) => {
+            return {name: ing.getName(), user: ing.getUsername()}
+        })}
     }
     getUsername() {
         return this.#username;
