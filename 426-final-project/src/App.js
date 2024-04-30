@@ -135,9 +135,12 @@ function RegisterPage() {
 
 function UserPage() {
   console.log(gl);
+  
   return (
     <div>
       <h1>Name : {gl.name}</h1>
+      <p>GPA : {gl.GPA}</p>
+      <p>Courses: {JSON.stringify(gl.Courses)}</p>
     </div>
   );
 }
