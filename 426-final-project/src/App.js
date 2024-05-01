@@ -1,12 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate, Link } from 'react-router-dom';
+import CalendarPage from './CalendarPage';
 import './App.css';
 
-
-let gl;
-
 function App() {
-  
   return (
     <Router>
       <div className="App">
@@ -15,6 +12,8 @@ function App() {
           <Route path="/" element={<SignInPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/user/:username" element={<UserPage />} />
+          <Route path="/auth/google" element={<GoogleAuth />} />
+          <Route path="/calendar" element={<CalendarPage />} />
         </Routes>
       </div>
     </Router>
@@ -23,52 +22,44 @@ function App() {
 
 function SignInPage() {
   const navigate = useNavigate();
-  
 
   async function eventHandler() {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
-
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      "name": username,
-      "username": username,
-      "password": password,
-      "Courses": []
-    });
-
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
+    let requestOptions = {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: 'follow'
     };
 
-    fetch("http://localhost:4000/User", requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
+    fetch(`http://localhost:4000/User/${username}?password=${password}`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
         if (result === "success") {
           navigate(`/user/${username}`);
         } else {
           console.log("User not found or invalid credentials");
         }
       })
-      .catch((error) => console.error(error));
+      .catch(error => console.error('Error:', error));
   }
 
   return (
     <div>
       <div className="input-container">
-        <input className="input" type="text" id="username" placeholder="Username"></input>
-        <input className="input" type="password" id="password" placeholder="Password"></input>
+        <input className="input" type="text" id="username" placeholder="Username" />
+        <input className="input" type="password" id="password" placeholder="Password" />
       </div>
       <div className="button-container">
         <button className="button" onClick={eventHandler}>Sign In</button>
       </div>
       <div className="register-container">
-        <p>Don't have an account? <a href="/register">Register</a></p>
+        <p>Don't have an account? <Link to="/register">Register</Link></p>
+      </div>
+      <div>
+        <button onClick={() => window.location.href = 'http://localhost:4000/auth/google'}>Sign in with Google</button>
       </div>
     </div>
   );
@@ -79,70 +70,68 @@ function RegisterPage() {
   async function eventHandler1() {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
-
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      "name": username,
-      "username": username,
-      "password": password,
-      "Courses": []
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
+    let requestOptions = {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "username": username,
+        "password": password,
+        "Courses": []
+      }),
+      redirect: 'follow'
     };
 
     fetch("http://localhost:4000/User", requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result);
-        result = JSON.parse(result);
-        if (result.name != undefined) {
+      .then(response => response.text())
+      .then(result => {
+        const data = JSON.parse(result);
+        if (data.name) {
           navigate(`/user/${username}`);
-          gl = result;
         } else {
           console.log("User not found or invalid credentials");
         }
       })
-      .catch((error) => console.error(error));
+      .catch(error => console.error('Error:', error));
   }
+
   return (
     <div className="registration-page">
       <h2>Registration Page</h2>
-      <div class="input-container">
-        <input className="input" type="text" id="username" placeholder="Username"></input>
-        <input className="input" type="password" id="password" placeholder="Password"></input>
-    <div className="custom-select">
-        <select className="select" id="user-type">
-        <option value="student">Student</option>
-        <option value="teacher">Teacher</option>
-        </select>
-        <span className="select-arrow">&#9662;</span>
+      <div className="input-container">
+        <input className="input" type="text" id="username" placeholder="Username" />
+        <input className="input" type="password" id="password" placeholder="Password" />
+        <div className="custom-select">
+          <select className="select" id="user-type">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+          </select>
+          <span className="select-arrow">&#9662;</span>
         </div>
-            <button className="button" onClick={eventHandler1}>Register</button>
-        </div>
-        <div>
-            <button className="button">Back</button>
-        </div>
+        <button className="button" onClick={eventHandler1}>Register</button>
+      </div>
+      <div>
+        <button className="button" onClick={() => navigate(-1)}>Back</button>
+      </div>
     </div>
   );
 }
 
 function UserPage() {
-  console.log(gl);
-  
+  const navigate = useNavigate();
+  const username = window.location.pathname.split('/')[2];
   return (
     <div>
-      <h1>Name : {gl.name}</h1>
-      <p>GPA : {gl.GPA}</p>
-      <p>Courses: {JSON.stringify(gl.Courses)}</p>
+      <h1>Welcome, {username}</h1>
+      <button onClick={() => navigate('/calendar')}>View Calendar</button>
     </div>
   );
+}
+
+
+function GoogleAuth() {
+  return <div>Authenticating with Google</div>;
 }
 
 export default App;
