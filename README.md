@@ -1,6 +1,6 @@
 # Getting Started with GradeTracker App
 
-This project was made with a React front-end and a express backend with API.
+This project was made with a React front-end and an Express backend with Google Calender API.
 
 Project built by Nicholas Boyer, Mugheera Basharat, Connor Goodwin
 
