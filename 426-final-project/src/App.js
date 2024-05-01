@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import CalendarPage from './CalendarPage';
 import './App.css';
 
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/user/:username" element={<UserPage />} />
           <Route path="/teach/:username" element={<TeachPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/auth/google" element={<GoogleAuth />} />
         </Routes>
       </div>

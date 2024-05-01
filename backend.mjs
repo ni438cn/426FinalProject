@@ -229,7 +229,7 @@ const oauth2Client = new google.auth.OAuth2(
       console.error('Error obtaining access tokens:', error);
       res.status(500).send('Authentication failed');
     }
-    res.redirect('http://localhost:3000/');
+    res.redirect('http://localhost:3000/calendar');
   });
   
 
