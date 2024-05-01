@@ -209,6 +209,7 @@ const oauth2Client = new google.auth.OAuth2(
     try {
       const { tokens } = await oauth2Client.getToken(code);
       oauth2Client.setCredentials(tokens);
+      //console.log(tokens);
       const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
       calendar.events.list({
         calendarId: 'primary',
@@ -229,7 +230,7 @@ const oauth2Client = new google.auth.OAuth2(
       console.error('Error obtaining access tokens:', error);
       res.status(500).send('Authentication failed');
     }
-    res.redirect('http://localhost:3000/');
+    res.redirect('http://localhost:3001/');
   });
   
 
