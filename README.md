@@ -25,7 +25,7 @@ Project built by Nicholas Boyer, Mugheera Basharat, Connor Goodwin
     - Course information
     - Grade information
     
-- Our backend communicates to our frontend through the following API calls:
+- Our frontend communicates to our backend through the following API calls:
     - GET    -> gets all Student users to authorize a registered Student account
     - GET    -> gets all Teacher users to authorize a registered Teacher account
     - GET    -> calls to Google's API to authorize the user account to access built-in calendar
@@ -36,8 +36,6 @@ Project built by Nicholas Boyer, Mugheera Basharat, Connor Goodwin
     - PUT    -> updates a user account's information (name, username, password)
     - PUT    -> updates a teacher's taught courses
     - PUT    -> updates a student's grade for a specified course
-
-    - DELETE -> deletes a user's account from the database
   
 
 - See this video to learn more: [https://youtu.be/UxgUrYMD_jU](https://youtu.be/UxgUrYMD_jU)
