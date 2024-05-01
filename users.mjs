@@ -72,8 +72,10 @@ export class Users {
         let points = 0;
         let ch = 0;
         this.#courses.forEach(element => {
-            ch += element.creditHours;
-            points +=  element.creditHours * Users.letterNumber(element.gradeLetter);
+            
+            ch += Number(element.creditHours);
+            points +=  Number(element.creditHours) * Users.letterNumber(element.gradeLetter);
+            console.log(points, ch);
 
         });
         return points / ch;

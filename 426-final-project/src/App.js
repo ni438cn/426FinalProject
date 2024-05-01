@@ -177,6 +177,11 @@ function RegisterPage() {
 }
 
 function UserPage() {
+  const navigate = useNavigate();
+  function signOut() {
+    gl= null;
+    navigate("/");
+  }
   async function eventHandler2() {
       let username = document.getElementById("username").value;
       let password = document.getElementById("password").value;
@@ -206,6 +211,7 @@ function UserPage() {
           result = JSON.parse(result);
           if (result.name != undefined) {
             console.log("success!");
+            navigate(`/user/${username}`);
           } else {
             console.log("User not found or invalid credentials");
             alert("Failed to reset")
@@ -218,7 +224,29 @@ function UserPage() {
     <div>
       <h1>Student Name : {gl.name}</h1>
       <p>GPA : {gl.GPA}</p>
-      <p>Courses: {JSON.stringify(gl.Courses)}</p>
+      <p>Courses:</p>
+      <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Credit Hours</th>
+            <th>Grade</th>
+            <th>Grade Letter</th>
+          </tr>
+        </thead>
+        <tbody>
+          {gl.Courses.map((course, index) => (
+            <tr key={index}>
+              <td>{course.name}</td>
+              <td>{course.creditHours}</td>
+              <td>{course.grade}</td>
+              <td>{course.gradeLetter}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
       <input className="input" type="text" id="username" placeholder="Current Username"></input>
       <input className="input" type="password" id="password" placeholder="Current Password"></input>
       <input className="input" type="password" id="new password" placeholder="New Password"></input>
@@ -226,11 +254,19 @@ function UserPage() {
       <div>
             <button className="button" onClick={eventHandler2}>Reset</button>
       </div>
+      <div>
+            <button className="button" onClick={signOut}>Sign Out</button>
+      </div>
     </div>
   );
 }
 
 function TeachPage() {
+  const navigate = useNavigate();
+  function signOut() {
+    gl= null;
+    navigate("/");
+  }
   async function eventHandler4() {
     let adder = document.getElementById("adder");
     let a = document.createElement("input");
@@ -253,6 +289,40 @@ function TeachPage() {
     let c = document.createElement("select");
     c.textContent = "Choose Students:";
     c.multiple = true;
+    let d = document.createElement("button");
+    d.className = "button";
+    d.textContent = "Added Course";
+    
+    d.addEventListener("click", () => {
+      console.log(c.selectedOptions);
+      let students = [];
+      let so = c.selectedOptions;
+      for (let i=0; i < so.length; i++) {
+
+        let n = so[i];
+        //console.log(n);
+        let name = n.label;
+        let username = n.attributes.value.nodeValue;
+        let grade = 0;
+        let gradeLetter = 0;
+        students.push({
+          name: name,
+          username: username,
+          grade: grade,
+          gradeLetter: gradeLetter
+        });
+      };
+      let cname = a.value;
+      let ch = b.value;
+      gl.Courses.push({
+        name: cname,
+        creditHours: ch,
+        students: students
+      });
+
+    });
+
+    
     //c.setAttribute("multiple");
 
     c.id = "Students";
@@ -260,9 +330,11 @@ function TeachPage() {
     options.forEach((e) => {
       let o = document.createElement("option");
       o.textContent = e.name;
+      o.value = e.user;
       c.append(o);
     });
     adder.append(c);
+    adder.append(d);
 
 
     /*
@@ -288,6 +360,18 @@ function TeachPage() {
 
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
+      try {
+
+      
+      gl.Courses.forEach( c => {
+        c.students.forEach(s => {
+          s.grade = document.getElementById(s.username+c.name+'1').value;
+          s.gradeLetter = document.getElementById(s.username+c.name+'2').value;
+          console.log(s.grade);
+        })
+      });
+      } catch{};
+
 
       const raw = JSON.stringify({
         "name": name,
@@ -303,13 +387,14 @@ function TeachPage() {
         redirect: "follow"
       };
 
-      fetch("http://localhost:4000/User/" +username + "?password=" + password, requestOptions)
+      fetch("http://localhost:4000/Teach/" +username + "?password=" + password, requestOptions)
         .then((response) => response.text())
         .then((result) => {
           console.log(result);
           result = JSON.parse(result);
           if (result.name != undefined) {
             console.log("success!");
+            navigate(`/teach/${username}`);
           } else {
             console.log("User not found or invalid credentials");
             alert("Failed to reset")
@@ -322,7 +407,48 @@ function TeachPage() {
     <div>
       <h1>Teacher Name : {gl.name}</h1>
      
-      <p>Courses: {JSON.stringify(gl.Courses)}</p>
+      <p>Courses:</p>
+      <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Credit Hours</th>
+            <th>Students</th>
+          </tr>
+        </thead>
+        <tbody>
+          {gl.Courses.map((course, index) => (
+            <tr key={index}>
+              <td>{course.name}</td>
+              <td>{course.creditHours}</td>
+              <td>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Student Name</th>
+                      <th>Student Username</th>
+                      <th>Grade</th>
+                      <th>Grade Letter</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {course.students.map((student, studentIndex) => (
+                      <tr key={studentIndex}>
+                        <td>{student.name}</td>
+                        <td>{student.username}</td>
+                        <td><input type="text" id={student.username + course.name + '1'} placeholder={student.grade}></input></td>
+                        <td><input type="text" id={student.username + course.name + '2'} placeholder={student.gradeLetter}></input></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
       <div id="adder"></div>
       <button className="button" onClick={eventHandler4}>Add Course</button>
       <div>
@@ -333,7 +459,10 @@ function TeachPage() {
       </div>
       
       <div>
-            <button className="button" onClick={eventHandler3}>Reset</button>
+            <button className="button" onClick={eventHandler3}>Reset/Save</button>
+      </div>
+      <div>
+            <button className="button" onClick={signOut}>Sign Out</button>
       </div>
     </div>
   );

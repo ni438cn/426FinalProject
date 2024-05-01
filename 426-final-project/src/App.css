@@ -99,3 +99,24 @@ body {
   border-right: 5px solid transparent;
   border-top: 5px solid #000000; /* Adjust arrow color as needed */
 }
+
+table {
+
+  justify-content: center;
+  border-collapse: collapse;
+  width: 75%
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+
+}
+
+th, td {
+  text-align: left;
+  padding: 5px;
+  border: 2px solid #0000a1;
+}
