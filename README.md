@@ -2,13 +2,16 @@
 
 This project was made with a React front-end and a express backend with API.
 
+Project built by Nicholas Boyer, Mugheera Basharat, Connor Goodwin
+
 # Overview of GradeTracker
 
 -Students can register and login to see their grades.
 
--Teachers can register and login to write their grades for their class.
+-Teachers can register and login to write their grades for their class for each student.
 
 -See this video to learn more: 
+
 
 ## Available Scripts
 
