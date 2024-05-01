@@ -16,6 +16,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/user/:username" element={<UserPage />} />
           <Route path="/teach/:username" element={<TeachPage />} />
+          <Route path="/auth/google" element={<GoogleAuth />} />
         </Routes>
       </div>
     </Router>
@@ -90,6 +91,9 @@ function SignInPage() {
       </div>
       <div className="register-container">
         <p>Don't have an account? <a href="/register">Register</a></p>
+      </div>
+      <div>
+        <button onClick={() => window.location.href = 'http://localhost:4000/auth/google'}>Sign in with Google</button>
       </div>
     </div>
   );
@@ -466,6 +470,11 @@ function TeachPage() {
       </div>
     </div>
   );
+}
+
+
+function GoogleAuth() {
+  return <div>Authenticating with Google</div>;
 }
 
 export default App;
