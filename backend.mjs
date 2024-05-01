@@ -209,6 +209,7 @@ const oauth2Client = new google.auth.OAuth2(
     try {
       const { tokens } = await oauth2Client.getToken(code);
       oauth2Client.setCredentials(tokens);
+      //console.log(tokens);
       const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
       calendar.events.list({
         calendarId: 'primary',
