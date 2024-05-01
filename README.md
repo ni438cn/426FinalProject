@@ -40,7 +40,7 @@ Project built by Nicholas Boyer, Mugheera Basharat, Connor Goodwin
     - DELETE -> deletes a user's account from the database
   
 
-- See this video to learn more: 
+- See this video to learn more: [https://youtu.be/UxgUrYMD_jU](https://youtu.be/UxgUrYMD_jU)
 
 
 ## Available Scripts
